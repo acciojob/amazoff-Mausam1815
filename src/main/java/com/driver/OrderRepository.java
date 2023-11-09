@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
-public class AmazoffRepository {
+public class OrderRepository {
     private final HashMap<String, Order> ordersDB = new HashMap<>();
     private final HashMap<String, DeliveryPartner> deliveryPartnersDB = new HashMap<>();
     private final HashMap<String, String> orderToPartnerDB = new HashMap<>();
