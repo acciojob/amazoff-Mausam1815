@@ -30,9 +30,6 @@ public class OrderController {
 
     @PostMapping("/add-partner/{partnerId}")
     public ResponseEntity<String> addPartner(@PathVariable String partnerId){
-        if(orderService.getPartnerById(partnerId) != null) {
-            return new ResponseEntity<>("Partner with ID " + partnerId + " already exist", HttpStatus.CONFLICT);
-        }
         orderService.addPartner(partnerId);
         return new ResponseEntity<>("New delivery partner added successfully", HttpStatus.CREATED);
     }
@@ -60,23 +57,16 @@ public class OrderController {
     public ResponseEntity<DeliveryPartner> getPartnerById(@PathVariable String partnerId){
 
         DeliveryPartner deliveryPartner = orderService.getPartnerById(partnerId);
-
-        //deliveryPartner should contain the value given by partnerId
-        if(deliveryPartner == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(deliveryPartner, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-order-count-by-partner-id/{partnerId}")
     public ResponseEntity<Integer> getOrderCountByPartnerId(@PathVariable String partnerId){
 
-        Integer orderCount = orderService.getOrderCountByPartnerId(partnerId);
+        Integer orderCount = 0;
 
         //orderCount should denote the orders given by a partner-id
-        if(orderCount == 0) {
-            return new ResponseEntity<>(orderCount, HttpStatus.NOT_FOUND);
-        }
+        orderCount = orderService.getOrderCountByPartnerId(partnerId);
 
         return new ResponseEntity<>(orderCount, HttpStatus.CREATED);
     }
@@ -96,19 +86,16 @@ public class OrderController {
     @GetMapping("/get-all-orders")
     public ResponseEntity<List<String>> getAllOrders(){
         List<String> orders = orderService.getAllOrder();
-        if(orders == null || orders.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         //Get all orders
         return new ResponseEntity<>(orders, HttpStatus.CREATED);
     }
 
     @GetMapping("/get-count-of-unassigned-orders")
     public ResponseEntity<Integer> getCountOfUnassignedOrders(){
-        Integer countOfOrders = orderService.getCountOfUnassignedOrder();
+        Integer countOfOrders = 0;
 
         //Count of orders that have not been assigned to any DeliveryPartner
+        countOfOrders = orderService.getCountOfUnassignedOrder();
 
         return new ResponseEntity<>(countOfOrders, HttpStatus.CREATED);
     }
@@ -137,9 +124,7 @@ public class OrderController {
 
         //Delete the partnerId
         //And push all his assigned orders to unassigned orders.
-        if(orderService.getPartnerById(partnerId) == null) {
-            return new ResponseEntity<>(partnerId + " does not exist", HttpStatus.NOT_FOUND);
-        }
+
         orderService.deletePartnerById(partnerId);
         return new ResponseEntity<>(partnerId + " removed successfully", HttpStatus.CREATED);
     }
@@ -149,9 +134,7 @@ public class OrderController {
 
         //Delete an order and also
         // remove it from the assigned order of that partnerId
-        if(orderService.getOrderById(orderId) == null) {
-            return new ResponseEntity<>(orderId + " does not exist", HttpStatus.NOT_FOUND);
-        }
+
         orderService.deleteOrderById(orderId);
         return new ResponseEntity<>(orderId + " removed successfully", HttpStatus.CREATED);
     }
